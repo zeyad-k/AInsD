@@ -7,6 +7,16 @@ const germanToArabicData = Object.entries(arabicToGermanData).reduce((acc, [key,
   return acc;
 }, {});
 
+// تعريف متغيرات الألوان للتطبيق
+const colors = {
+  primary: '#9a2d66',    // أحمر غامق - اللون الرئيسي
+  secondary: '#dae5ff',  // أزرق فاتح - اللون الثانوي
+  highlight: '#ffacc2',  // وردي فاتح - لون الإبراز
+  accent: '#ffeb4d',     // أصفر ليموني - لون التمييز
+  white: '#ffffff',      // أبيض - الخلفية والنصوص المقروءة
+  text: '#333333',       // رمادي غامق - للنصوص العادية
+};
+
 export default function TranslatorApp() {
   const [arabicText, setArabicText] = useState('');
   const [germanText, setGermanText] = useState('');
@@ -186,15 +196,16 @@ export default function TranslatorApp() {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">مترجم العربية-الألمانية</h1>
+    <div className="flex flex-col items-center p-6 max-w-2xl mx-auto" style={{ backgroundColor: colors.white }}>
+      <h1 className="text-2xl font-bold mb-6" style={{ color: colors.primary }}>مترجم العربية-الألمانية</h1>
       
       <div className="flex flex-col w-full space-y-4">
         {/* أزرار تبديل اتجاه الترجمة */}
         <div className="flex justify-center mb-2">
           <button 
             onClick={toggleDirection}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg flex items-center"
+            className="text-white font-medium py-2 px-4 rounded-lg flex items-center"
+            style={{ backgroundColor: colors.primary, borderColor: colors.primary }}
           >
             {translationDirection === 'ar-de' ? 
               'من العربية إلى الألمانية' : 
@@ -207,7 +218,8 @@ export default function TranslatorApp() {
           
           <button 
             onClick={() => setShowDictionary(!showDictionary)}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg ml-2"
+            className="font-medium py-2 px-4 rounded-lg ml-2"
+            style={{ backgroundColor: colors.secondary, color: colors.primary }}
           >
             {showDictionary ? 'إخفاء القاموس' : 'عرض القاموس'}
           </button>
@@ -217,7 +229,7 @@ export default function TranslatorApp() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* مكان إدخال النص المصدر */}
           <div className="flex flex-col">
-            <label className="mb-2 font-medium  text-center" dir="rtl">
+            <label className="mb-2 font-medium text-center" dir="rtl" style={{ color: colors.primary }}>
               {translationDirection === 'ar-de' ? 'النص العربي' : 'النص الألماني'}
             </label>
             <textarea
@@ -227,7 +239,8 @@ export default function TranslatorApp() {
                 handleArabicChange(e.target.value) : 
                 handleGermanChange(e.target.value)
               }
-              className="border border-gray-300 rounded-lg p-3 h-40 font-arabic"
+              className="border rounded-lg p-3 h-40 font-arabic"
+              style={{ borderColor: colors.primary, backgroundColor: colors.white }}
               placeholder={translationDirection === 'ar-de' ? 
                 'أدخل النص بالعربية هنا...' : 
                 'Geben Sie hier deutschen Text ein...'
@@ -237,14 +250,15 @@ export default function TranslatorApp() {
           
           {/* مكان عرض الترجمة - غير قابل للكتابة وبلون مختلف */}
           <div className="flex flex-col">
-            <label className="mb-2 font-medium text-center">
+            <label className="mb-2 font-medium text-center" style={{ color: colors.primary }}>
               {translationDirection === 'ar-de' ? 'الترجمة الألمانية' : 'الترجمة العربية'}
             </label>
             <textarea
               dir={translationDirection === 'ar-de' ? "ltr" : "rtl"}
               value={translationDirection === 'ar-de' ? germanText : arabicText}
               readOnly
-              className="border border-gray-300 rounded-lg p-3 h-40 bg-gray-100"
+              className="border rounded-lg p-3 h-40"
+              style={{ backgroundColor: colors.secondary, borderColor: colors.primary }}
               placeholder={translationDirection === 'ar-de' ? 
                 'Die Übersetzung wird hier angezeigt...' : 
                 'ستظهر الترجمة هنا...'
@@ -256,13 +270,14 @@ export default function TranslatorApp() {
         {/* الاقتراحات */}
         {suggestions.length > 0 && (
           <div className="mt-2">
-            <p className="text-sm text-gray-600 mb-1">اقتراحات:</p>
+            <p className="text-sm mb-1" style={{ color: colors.primary }}>اقتراحات:</p>
             <div className="flex flex-wrap gap-2">
               {suggestions.map((suggestion, index) => (
                 <button
                   key={index}
                   onClick={() => selectSuggestion(suggestion)}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 rounded-md text-sm"
+                  className="px-3 py-1 rounded-md text-sm"
+                  style={{ backgroundColor: colors.highlight, color: colors.primary }}
                 >
                   {suggestion}
                 </button>
@@ -273,12 +288,12 @@ export default function TranslatorApp() {
         
         {/* عرض القاموس - تم تحسين شكل الجدول */}
         {showDictionary && (
-          <div className="mt-4 border rounded-lg p-4 bg-gray-50">
-            <h3 className="font-medium mb-2">القاموس ({Object.keys(arabicToGermanData).length} كلمة)</h3>
+          <div className="mt-4 border rounded-lg p-4" style={{ borderColor: colors.primary, backgroundColor: colors.white }}>
+            <h3 className="font-medium mb-2" style={{ color: colors.primary }}>القاموس ({Object.keys(arabicToGermanData).length} كلمة)</h3>
             <div className="max-h-60 overflow-y-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-blue-500 text-white">
+                  <tr style={{ backgroundColor: colors.primary, color: colors.white }}>
                     <th className="py-2 px-3 text-right">الكلمة العربية</th>
                     <th className="py-2 px-3 text-center" style={{ width: '40px' }}></th>
                     <th className="py-2 px-3 text-left">الترجمة الألمانية</th>
@@ -288,7 +303,10 @@ export default function TranslatorApp() {
                   {Object.entries(arabicToGermanData).map(([ar, de], index) => (
                     <tr 
                       key={index} 
-                      className={`${index % 2 === 0 ? "bg-white" : "bg-gray-100"} hover:bg-blue-50 cursor-pointer`}
+                      className="hover:cursor-pointer"
+                      style={{ 
+                        backgroundColor: index % 2 === 0 ? colors.white : colors.secondary,
+                      }}
                       onClick={() => {
                         if (translationDirection === 'ar-de') {
                           setArabicText(ar);
@@ -299,9 +317,9 @@ export default function TranslatorApp() {
                         }
                       }}
                     >
-                      <td dir="rtl" className="py-2 px-3 text-right font-medium text-blue-700">{ar}</td>
+                      <td dir="rtl" className="py-2 px-3 text-right font-medium" style={{ color: colors.primary }}>{ar}</td>
                       <td className="py-2 px-3 text-center">→</td>
-                      <td className="py-2 px-3 text-left font-medium text-green-700">{de}</td>
+                      <td className="py-2 px-3 text-left font-medium" style={{ color: colors.primary }}>{de}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -312,26 +330,27 @@ export default function TranslatorApp() {
         
         {/* سجل الترجمات */}
         {history.length > 0 && (
-          <div className="mt-4 border rounded-lg p-4">
-            <h3 className="font-medium mb-2">سجل الترجمات الأخيرة</h3>
+          <div className="mt-4 border rounded-lg p-4" style={{ borderColor: colors.primary, backgroundColor: colors.white }}>
+            <h3 className="font-medium mb-2" style={{ color: colors.primary }}>سجل الترجمات الأخيرة</h3>
             <div className="space-y-2">
               {history.map((item, index) => (
                 <div 
                   key={index} 
-                  className="flex justify-between items-center bg-gray-100 p-2 rounded-md hover:bg-gray-200 cursor-pointer"
+                  className="flex justify-between items-center p-2 rounded-md cursor-pointer"
+                  style={{ backgroundColor: colors.accent }}
                   onClick={() => selectHistoryItem(item)}
                 >
                   <div className="flex flex-col">
                     <div className="flex space-x-2">
-                      <span dir={item.direction.startsWith('ar') ? 'rtl' : 'ltr'}>
+                      <span dir={item.direction.startsWith('ar') ? 'rtl' : 'ltr'} style={{ color: colors.primary }}>
                         {item.source}
                       </span>
                       <span>→</span>
-                      <span dir={item.direction.startsWith('de') ? 'rtl' : 'ltr'}>
+                      <span dir={item.direction.startsWith('de') ? 'rtl' : 'ltr'} style={{ color: colors.primary }}>
                         {item.target}
                       </span>
                     </div>
-                    <span className="text-xs text-gray-500">{item.timestamp}</span>
+                    <span className="text-xs" style={{ color: colors.primary }}>{item.timestamp}</span>
                   </div>
                 </div>
               ))}
@@ -340,14 +359,13 @@ export default function TranslatorApp() {
         )}
       </div>
       
-      <div className="mt-8 p-4 border rounded-lg bg-gray-50 w-full">
-        <h2 className="text-lg font-medium mb-2">ملاحظات:</h2>
-        <ul className="list-disc pl-6 space-y-1 text-sm text-gray-700">
+      <div className="mt-8 p-4 border rounded-lg w-full" style={{ backgroundColor: colors.secondary, borderColor: colors.primary }}>
+        <h2 className="text-lg font-medium mb-2" style={{ color: colors.primary }}>ملاحظات:</h2>
+        <ul className="list-disc pl-6 space-y-1 text-sm" style={{ color: colors.primary }}>
           <li>هذا التطبيق يعتمد على قاموس محدود من الكلمات</li>
           <li>يمكنك إضافة المزيد من الكلمات عن طريق تعديل ملفات JSON</li>
           <li>تتم الترجمة محلياً دون الحاجة إلى اتصال بالإنترنت</li>
         </ul>
       </div>
     </div>
-  );
-}
+  );}
