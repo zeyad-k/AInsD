@@ -217,7 +217,7 @@ export default function TranslatorApp() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* مكان إدخال النص المصدر */}
           <div className="flex flex-col">
-            <label className="mb-2 font-medium" dir="rtl">
+            <label className="mb-2 font-medium  text-center" dir="rtl">
               {translationDirection === 'ar-de' ? 'النص العربي' : 'النص الألماني'}
             </label>
             <textarea
