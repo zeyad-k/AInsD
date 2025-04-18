@@ -18,35 +18,65 @@ export default function TranslatorApp() {
   // تأخير للترجمة لتجنب الكثير من التحديثات
   const [translationTimeout, setTranslationTimeout] = useState(null);
   
-  // دالة الترجمة باستخدام ملفات JSON
+  // دالة مساعدة لإضافة الترجمات للتاريخ
+  const addToHistory = (source, target, sourceLanguage, targetLanguage) => {
+    const newHistoryItem = {
+      source: source,
+      target: target,
+      direction: `${sourceLanguage}-${targetLanguage}`,
+      timestamp: new Date().toLocaleTimeString()
+    };
+    setHistory(prev => [newHistoryItem, ...prev.slice(0, 9)]);
+  };
+  
+  // دالة الترجمة باستخدام ملفات JSON - تم تحسينها لتكون غير حساسة لحالة الأحرف
   const translateText = (text, sourceLanguage, targetLanguage) => {
     if (!text.trim()) return '';
     
     // تحديد القاموس المناسب
     const dictionary = sourceLanguage === 'ar' ? arabicToGermanData : germanToArabicData;
     
-    // البحث عن الكلمة أو العبارة كاملة
-    if (dictionary[text]) {
-      // إضافة إلى التاريخ
-      const newHistoryItem = {
-        source: text,
-        target: dictionary[text],
-        direction: `${sourceLanguage}-${targetLanguage}`,
-        timestamp: new Date().toLocaleTimeString()
-      };
-      setHistory(prev => [newHistoryItem, ...prev.slice(0, 9)]);
+    // للنصوص الألمانية: تحويل أول حرف لحرف كبير والباقي صغير إذا كانت الكلمة موجودة
+    if (sourceLanguage === 'de') {
+      const normalizedText = text.toLowerCase();
+      const capitalizedText = text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
       
-      return dictionary[text];
+      // البحث عن النص بعدة أشكال
+      if (dictionary[text]) { // كما هو
+        addToHistory(text, dictionary[text], sourceLanguage, targetLanguage);
+        return dictionary[text];
+      } else if (dictionary[capitalizedText]) { // بحرف كبير في البداية
+        addToHistory(text, dictionary[capitalizedText], sourceLanguage, targetLanguage);
+        return dictionary[capitalizedText];
+      } else if (dictionary[normalizedText]) { // كلها أحرف صغيرة
+        addToHistory(text, dictionary[normalizedText], sourceLanguage, targetLanguage);
+        return dictionary[normalizedText];
+      }
+    } else {
+      // للنصوص العربية: بحث مباشر
+      if (dictionary[text]) {
+        addToHistory(text, dictionary[text], sourceLanguage, targetLanguage);
+        return dictionary[text];
+      }
     }
     
     // تقسيم النص إلى كلمات ومحاولة ترجمة كل كلمة
     const words = text.split(' ');
-    const translatedWords = words.map(word => dictionary[word] || word);
+    const translatedWords = words.map(word => {
+      if (sourceLanguage === 'de') {
+        const normalizedWord = word.toLowerCase();
+        const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        
+        return dictionary[word] || dictionary[capitalizedWord] || dictionary[normalizedWord] || word;
+      } else {
+        return dictionary[word] || word;
+      }
+    });
     
     return translatedWords.join(' ');
   };
   
-  // بحث عن اقتراحات أثناء الكتابة
+  // بحث عن اقتراحات أثناء الكتابة - تم تحسينها لتكون غير حساسة لحالة الأحرف
   const findSuggestions = (text, language) => {
     if (!text.trim()) {
       setSuggestions([]);
@@ -54,11 +84,23 @@ export default function TranslatorApp() {
     }
     
     const dictionary = language === 'ar' ? arabicToGermanData : germanToArabicData;
-    const suggestionList = Object.keys(dictionary)
-      .filter(word => word.startsWith(text))
-      .slice(0, 5);
+    
+    if (language === 'de') {
+      const normalizedText = text.toLowerCase();
+      // تجميع الاقتراحات من البحث بأشكال مختلفة
+      const suggestionList = Object.keys(dictionary).filter(word => 
+        word.toLowerCase().startsWith(normalizedText)
+      ).slice(0, 5);
       
-    setSuggestions(suggestionList);
+      setSuggestions(suggestionList);
+    } else {
+      // للعربية: بحث عادي
+      const suggestionList = Object.keys(dictionary)
+        .filter(word => word.startsWith(text))
+        .slice(0, 5);
+        
+      setSuggestions(suggestionList);
+    }
   };
   
   // دالة معالجة تغيير النص العربي
@@ -229,7 +271,7 @@ export default function TranslatorApp() {
           </div>
         )}
         
-        {/* عرض القاموس */}
+        {/* عرض القاموس - تم تحسين شكل الجدول */}
         {showDictionary && (
           <div className="mt-4 border rounded-lg p-4 bg-gray-50">
             <h3 className="font-medium mb-2">القاموس ({Object.keys(arabicToGermanData).length} كلمة)</h3>
@@ -256,7 +298,6 @@ export default function TranslatorApp() {
                           setArabicText(ar);
                         }
                       }}
-                     
                     >
                       <td dir="rtl" className="py-2 px-3 text-right font-medium text-blue-700">{ar}</td>
                       <td className="py-2 px-3 text-center">→</td>
