@@ -237,7 +237,7 @@ export default function TranslatorApp() {
           
           {/* مكان عرض الترجمة - غير قابل للكتابة وبلون مختلف */}
           <div className="flex flex-col">
-            <label className="mb-2 font-medium">
+            <label className="mb-2 font-medium text-center">
               {translationDirection === 'ar-de' ? 'الترجمة الألمانية' : 'الترجمة العربية'}
             </label>
             <textarea
