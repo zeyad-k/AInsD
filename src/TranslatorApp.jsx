@@ -359,13 +359,36 @@ export default function TranslatorApp() {
         )}
       </div>
       
-      <div className="mt-8 p-4 border rounded-lg w-full" style={{ backgroundColor: colors.secondary, borderColor: colors.primary }}>
-        <h2 className="text-lg font-medium mb-2" style={{ color: colors.primary }}>ملاحظات:</h2>
-        <ul className="list-disc pl-6 space-y-1 text-sm" style={{ color: colors.primary }}>
-          <li>هذا التطبيق يعتمد على قاموس محدود من الكلمات</li>
-          <li>يمكنك إضافة المزيد من الكلمات عن طريق تعديل ملفات JSON</li>
-          <li>تتم الترجمة محلياً دون الحاجة إلى اتصال بالإنترنت</li>
-        </ul>
+           <div className="mt-8 p-4 border rounded-lg w-full" style={{ backgroundColor: colors.secondary, borderColor: colors.primary }}>
+        <h2 className="text-lg text-center font-medium mb-4" style={{ color: colors.primary }}>Made by:</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+          <div className="p-2 rounded-lg" style={{ backgroundColor: colors.white }}>
+            <p className="font-medium" style={{ color: colors.primary }}>Mariam Mohamed Saad</p>
+            <p className="text-sm" style={{ color: colors.text }}>ID: 92210022</p>
+          </div>
+          <div className="p-2 rounded-lg" style={{ backgroundColor: colors.white }}>
+            <p className="font-medium" style={{ color: colors.primary }}>Shahd Waleed Saad</p>
+            <p className="text-sm" style={{ color: colors.text }}>ID: 92210018</p>
+          </div>
+          <div className="p-2 rounded-lg" style={{ backgroundColor: colors.white }}>
+            <p className="font-medium" style={{ color: colors.primary }}>Sana Gamal Gaber Ali</p>
+            <p className="text-sm" style={{ color: colors.text }}>ID: 92210043</p>
+          </div>
+          <div className="p-2 rounded-lg" style={{ backgroundColor: colors.white }}>
+            <p className="font-medium" style={{ color: colors.primary }}>Shahira Hashim Ahmed</p>
+            <p className="text-sm" style={{ color: colors.text }}>ID: 92210121</p>
+          </div>
+          <div className="p-2 rounded-lg" style={{ backgroundColor: colors.white }}>
+            <p className="font-medium" style={{ color: colors.primary }}>Alaa Gomaa Abdullah</p>
+            <p className="text-sm" style={{ color: colors.text }}>ID: 92210150</p>
+          </div>
+          <div className="p-2 rounded-lg" style={{ backgroundColor: colors.white }}>
+            <p className="font-medium" style={{ color: colors.primary }}>Tasneem Ahmed Abdel Aziz</p>
+            <p className="text-sm" style={{ color: colors.text }}>ID: 92210033</p>
+          </div>
+        </div>
+        
+        
       </div>
     </div>
   );}
